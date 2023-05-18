@@ -24,4 +24,11 @@ class ToDoController extends AbstractController
         return $this->render('to_do/index.html.twig',
         );
     }
+    #[Route('/todo/{name}/{content}',name: 'todo.add')]
+    public function addTodo(Request $request, $name, $content){
+        if ($session -> has('todos')){
+
+        }
+
+    }
 }
