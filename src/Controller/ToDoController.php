@@ -25,19 +25,21 @@ class ToDoController extends AbstractController
         return $this->render('to_do/index.html.twig',
         );
     }
-    #[Route('/to_do/{name}/{content}',name: 'todo.add')]
+    #[Route('/to_do/update/{name}/{content}',name: 'todo.update')]
 
-    public function addTodo(Request $request, $name, $content){
+    public function updateToDo(Request $request, $name, $content){
         $session = $request -> getSession();
         if ($session -> has('todos')){
             $todos = $session -> get('todos');
-            if (isset($todos[$name])) {
-                $this -> addFlash('error', 'la liste todo $name existe déjà');
+            if (!isset($todos[$name])) {
+
+                $this -> addFlash('error', 'la liste todo n existe pas');
             }
             else {
                 $todos [$name] = $content;
-                $this -> addFlash('success', 'le todo d id $name a été ajouté');
                 $session -> set('todos', $todos);
+                $this -> addFlash('success', 'le todo d id $name a été ajouté');
+
             }
         }
         else{
@@ -45,4 +47,27 @@ class ToDoController extends AbstractController
         }
         return $this-> redirectToRoute('to_do');
     }
+    #[Route('/to_do/add/{name}/{content}',name: 'todo.add')]
+
+    public function addTodo(Request $request, $name, $content){
+        $session = $request -> getSession();
+        if ($session -> has('todos')){
+            $todos = $session -> get('todos');
+            if (isset($todos[$name])) {
+
+                $this -> addFlash('error', 'la liste todo avec ce meme id existe');
+            }
+            else {
+                $todos [$name] = $content;
+                $session -> set('todos', $todos);
+                $this -> addFlash('success', 'le todo d id $name a été ajouté');
+
+            }
+        }
+        else{
+            $this ->addFlash('error', 'la liste des todo n est pas encore initialisée');
+        }
+        return $this-> redirectToRoute('to_do');
+    }
+
 }
